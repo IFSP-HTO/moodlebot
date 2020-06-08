@@ -11,7 +11,7 @@ import (
 func main() {
 	// Set up authentication information.
 	auth := sasl.NewPlainClient("", "username", "password")
-	
+
 	// Connect to the server, authenticate, set the sender and recipient,
 	// and send the email all in one step.
 	to := []string{"recipient@example.net"}
@@ -19,7 +19,7 @@ func main() {
 		"Subject: discount Gophers!\r\n" +
 		"\r\n" +
 		"This is the email body.\r\n")
-	err := smtp.SendMail("localhost:1025", auth,  "sender@example.org", to, msg)
+	err := smtp.SendMail("localhost:1025", auth, "sender@example.org", to, msg)
 	if err != nil {
 		log.Fatal(err)
 	}
