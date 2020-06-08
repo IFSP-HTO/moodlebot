@@ -7,6 +7,6 @@ COPY . .
 RUN go get -d -v ./...
 RUN go install -v ./...
 
-EXPOSE 25/tcp
+EXPOSE 587/tcp
 
 CMD ["moodlebot"]
