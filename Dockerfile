@@ -9,5 +9,6 @@ RUN go install -v ./...
 
 EXPOSE 587/tcp
 EXPOSE 465/tcp
+EXPOSE 25/tcp
 
 CMD ["moodlebot"]
