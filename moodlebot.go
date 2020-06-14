@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -17,17 +16,14 @@ import (
 // The Backend implements SMTP server methods.
 type Backend struct{}
 
-// Login handles a login command with username and password.
+// Login returns a session after login. Here we do not demand any login
 func (bkd *Backend) Login(state *smtp.ConnectionState, username, password string) (smtp.Session, error) {
-	if username != "username" || password != "password" {
-		return nil, errors.New("Invalid username or password")
-	}
 	return &Session{}, nil
 }
 
 // AnonymousLogin requires clients to authenticate using SMTP AUTH before sending emails
 func (bkd *Backend) AnonymousLogin(state *smtp.ConnectionState) (smtp.Session, error) {
-	return nil, smtp.ErrAuthRequired
+	return &Session{}, nil
 }
 
 // A Session is returned after successful login.
@@ -96,11 +92,12 @@ func main() {
 
 	s := smtp.NewServer(be)
 
-	s.Addr = ":465"
+	s.Addr = ":25"
 	s.Domain = "209.182.235.117"
 	s.ReadTimeout = 10 * time.Second
 	s.WriteTimeout = 10 * time.Second
-	s.MaxMessageBytes = 1024 * 1024
+	s.MaxMessageBytes = 20 * 1024
+	s.MaxLineLength = 10000
 	s.MaxRecipients = 50
 	s.AllowInsecureAuth = true
 
