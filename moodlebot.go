@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"strings"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 	"time"
 
 	"github.com/emersion/go-smtp"
+	"github.com/jhillyerd/enmime"
 )
 
 // The Backend implements SMTP server methods.
@@ -44,13 +46,21 @@ func (s *Session) Data(r io.Reader) error {
 		return err
 	} else {
 
+		r := strings.NewReader(string(b))
+		env, err := enmime.ReadEnvelope(r)
+		if err != nil {
+			fmt.Print(err)
+		}
+		fmt.Println(env.Text, "\n")
+
 		url := "https://discord.com/api/webhooks/719401315910025229/DQwLU76-dm18r52fV8ztLTH68HdwuxRnV7MG4es8jXjy6ShDNtsn-Hmr0tL_kKLVF0yP?username=Flavio&content=Acabou%20de%20entrar!"
 		method := "POST"
 		payload := &bytes.Buffer{}
 		writer := multipart.NewWriter(payload)
 		_ = writer.WriteField("username", "MOODLE-HTO")
-		_ = writer.WriteField("content", string(b))
-		err := writer.Close()
+		_ = writer.WriteField("content", env.Text)
+
+		err = writer.Close()
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -97,7 +107,6 @@ func main() {
 	s.ReadTimeout = 10 * time.Second
 	s.WriteTimeout = 10 * time.Second
 	s.MaxMessageBytes = 20 * 1024
-	s.MaxLineLength = 10000
 	s.MaxRecipients = 50
 	s.AllowInsecureAuth = true
 
