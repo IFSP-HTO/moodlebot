@@ -2,18 +2,20 @@ package main
 
 import (
 	"bytes"
-	"strings"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/emersion/go-smtp"
 	"github.com/jhillyerd/enmime"
 )
+
+const meuemail = "prof.flaviobarros@gmail.com"
 
 // The Backend implements SMTP server methods.
 type Backend struct{}
@@ -31,16 +33,19 @@ func (bkd *Backend) AnonymousLogin(state *smtp.ConnectionState) (smtp.Session, e
 // A Session is returned after successful login.
 type Session struct{}
 
+// Mail starts a session after smtp connection
 func (s *Session) Mail(from string, opts smtp.MailOptions) error {
 	log.Println("Mail from:", from)
 	return nil
 }
 
+// Rcpt prints the receipt
 func (s *Session) Rcpt(to string) error {
 	log.Println("Rcpt to:", to)
 	return nil
 }
 
+// Data records the mail Data
 func (s *Session) Data(r io.Reader) error {
 	if b, err := ioutil.ReadAll(r); err != nil {
 		return err
@@ -53,7 +58,11 @@ func (s *Session) Data(r io.Reader) error {
 		}
 		fmt.Println(env.Text, "\n")
 
-		url := "https://discord.com/api/webhooks/719401315910025229/DQwLU76-dm18r52fV8ztLTH68HdwuxRnV7MG4es8jXjy6ShDNtsn-Hmr0tL_kKLVF0yP?username=Flavio&content=Acabou%20de%20entrar!"
+		if meuemail != env.Root.Header.Get("Sender") {
+			return err
+		}
+
+		url := "https://discordapp.com/api/webhooks/730145763853860886/7DKQzl83j9i6H3Vw1qJx33Uh7Wcw-ZK1aaJkywmzne905BMwbV-vSU67zSEN_uDFnyTx"
 		method := "POST"
 		payload := &bytes.Buffer{}
 		writer := multipart.NewWriter(payload)
