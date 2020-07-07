@@ -15,7 +15,7 @@ import (
 	"github.com/jhillyerd/enmime"
 )
 
-const meuemail = "prof.flaviobarros@gmail.com"
+const meuemail = "Flavio Barros <prof.flaviobarros@gmail.com>"
 
 // The Backend implements SMTP server methods.
 type Backend struct{}
@@ -47,6 +47,7 @@ func (s *Session) Rcpt(to string) error {
 
 // Data records the mail Data
 func (s *Session) Data(r io.Reader) error {
+
 	if b, err := ioutil.ReadAll(r); err != nil {
 		return err
 	} else {
@@ -54,11 +55,16 @@ func (s *Session) Data(r io.Reader) error {
 		r := strings.NewReader(string(b))
 		env, err := enmime.ReadEnvelope(r)
 		if err != nil {
+			fmt.Println("deu erro no readnenvelope!")
 			fmt.Print(err)
 		}
-		fmt.Println(env.Text, "\n")
+		fmt.Println("===================")
 
-		if meuemail != env.Root.Header.Get("Sender") {
+		fmt.Println(env.Root.Header.Get("From"))
+
+		fmt.Println("===================")
+
+		if meuemail != env.Root.Header.Get("From") {
 			return err
 		}
 
@@ -112,7 +118,7 @@ func main() {
 	s := smtp.NewServer(be)
 
 	s.Addr = ":25"
-	s.Domain = "209.182.235.117"
+	s.Domain = "stat-math.com.br"
 	s.ReadTimeout = 10 * time.Second
 	s.WriteTimeout = 10 * time.Second
 	s.MaxMessageBytes = 20 * 1024

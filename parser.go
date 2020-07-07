@@ -65,6 +65,9 @@ Content-Type: text/html; charset="UTF-8"
 		fmt.Print(err)
 	}
 	fmt.Println(env.Text)
+	for k, v := range env.Root.Header {
+		fmt.Printf("Key: %s; Value: %s\n", k, v)
+	}
 
 	fmt.Printf("%T", env.Root.Header.Get("Sender"))
 
