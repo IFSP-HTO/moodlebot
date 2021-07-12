@@ -15,7 +15,7 @@ import (
 	"github.com/jhillyerd/enmime"
 )
 
-const meuemail = "Flavio Barros <prof.flaviobarros@gmail.com>"
+const meuemail = "Seu nome <seu email>"
 
 // The Backend implements SMTP server methods.
 type Backend struct{}
@@ -68,7 +68,7 @@ func (s *Session) Data(r io.Reader) error {
 			return err
 		}
 
-		url := "https://discordapp.com/api/webhooks/730145763853860886/7DKQzl83j9i6H3Vw1qJx33Uh7Wcw-ZK1aaJkywmzne905BMwbV-vSU67zSEN_uDFnyTx"
+		url := "<discord hook>"
 		method := "POST"
 		payload := &bytes.Buffer{}
 		writer := multipart.NewWriter(payload)
