@@ -72,7 +72,7 @@ func (s *Session) Data(r io.Reader) error {
 		method := "POST"
 		payload := &bytes.Buffer{}
 		writer := multipart.NewWriter(payload)
-		_ = writer.WriteField("username", "MOODLE-HTO")
+		_ = writer.WriteField("username", "<bot name>")
 		_ = writer.WriteField("content", env.Text)
 
 		err = writer.Close()
